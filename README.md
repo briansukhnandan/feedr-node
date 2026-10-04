@@ -43,7 +43,11 @@ The Make targets pass the host UID and GID into the container. Cron itself
 runs as root, but generator and publishing commands drop to that identity so
 the node does not leave root-owned files in `~/.feedr`.
 
-Extend the Dockerfile if a generator needs another runtime or package.
+The image tracks the official `node:lts-alpine` tag and includes Node.js,
+`npm`, Alpine's current `python3`, and `pip3`. The `python` and `pip` commands
+are aliases for their Python 3 equivalents. `make build`, `make start`, and
+`make test` use Docker's `--pull` option so a rebuild checks for the latest LTS
+base image. Extend the Dockerfile if a generator needs another package.
 
 ## Generator contract
 
@@ -53,6 +57,13 @@ should create a complete JSON array and call:
 
 ```sh
 feedr publish /path/to/generated-posts.json
+```
+
+For example, the configured command may invoke either bundled runtime:
+
+```text
+FEEDR_SCRIPT_COMMAND=node generator.js
+FEEDR_SCRIPT_COMMAND=python generator.py
 ```
 
 Publishing validates the basic JSON shape, then atomically replaces:

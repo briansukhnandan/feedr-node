@@ -1,6 +1,8 @@
-FROM alpine:3.20 AS base
+FROM node:lts-alpine AS base
 
-RUN apk add --no-cache jq su-exec tzdata
+RUN apk add --no-cache jq py3-pip python3 su-exec tzdata \
+    && ln -sf /usr/bin/python3 /usr/local/bin/python \
+    && ln -sf /usr/bin/pip3 /usr/local/bin/pip
 
 COPY bin/feedr /usr/local/bin/feedr
 RUN chmod 0755 /usr/local/bin/feedr \
@@ -17,6 +19,12 @@ WORKDIR /workspace
 COPY bin ./bin
 COPY tests ./tests
 RUN chmod 0755 ./bin/feedr ./tests/feedr_test.sh \
+    && node --version \
+    && npm --version \
+    && python --version \
+    && python3 --version \
+    && pip --version \
+    && pip3 --version \
     && ./tests/feedr_test.sh
 
 FROM base AS runtime
