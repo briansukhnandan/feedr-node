@@ -1,0 +1,14 @@
+services:
+  feedr-node:
+    build: .
+    image: feedr-node:local
+    restart: unless-stopped
+    environment:
+      FEEDR_CONFIG_FILE: /config/feedr-node.conf
+      FEEDR_HOME: /feedr
+      FEEDR_UID: "${FEEDR_UID:-1000}"
+      FEEDR_GID: "${FEEDR_GID:-1000}"
+    volumes:
+      - "${FEEDR_DATA_DIR:-$HOME/.feedr}:/feedr"
+      - "./config:/config"
+      - "./scripts:/scripts:ro"

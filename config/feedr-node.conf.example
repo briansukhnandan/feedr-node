@@ -1,0 +1,7 @@
+# Copy this file to feedr-node.conf or run `make init`.
+FEEDR_FEED_ID=example
+FEEDR_CRON_STRING=0 * * * *
+FEEDR_SCRIPT_DIR=/scripts
+FEEDR_SCRIPT_COMMAND=./example.sh
+# Keep this equal to the timezone in the parent feedr config.json.
+FEEDR_TIMEZONE=UTC
