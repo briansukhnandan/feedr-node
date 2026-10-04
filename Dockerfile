@@ -17,6 +17,7 @@ ENV FEEDR_CONFIG_FILE=/config/feedr-node.conf \
 FROM base AS test
 WORKDIR /workspace
 COPY bin ./bin
+COPY scripts ./scripts
 COPY tests ./tests
 RUN chmod 0755 ./bin/feedr ./tests/feedr_test.sh \
     && node --version \
