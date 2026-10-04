@@ -1,6 +1,7 @@
 .PHONY: build init start stop logs test
 
-COMPOSE = FEEDR_UID=$$(id -u) FEEDR_GID=$$(id -g) docker compose
+COMPOSE_ENV = $(if $(wildcard reddit.env),--env-file reddit.env,)
+COMPOSE = FEEDR_UID=$$(id -u) FEEDR_GID=$$(id -g) docker compose $(COMPOSE_ENV)
 
 build:
 	$(COMPOSE) build --pull

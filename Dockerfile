@@ -5,6 +5,7 @@ RUN apk add --no-cache jq py3-pip python3 su-exec tzdata \
     && ln -sf /usr/bin/pip3 /usr/local/bin/pip
 
 COPY bin/feedr /usr/local/bin/feedr
+COPY integrations /integrations
 RUN chmod 0755 /usr/local/bin/feedr \
     && mkdir -p /config /feedr /scripts /var/lib/feedr-node
 
@@ -17,6 +18,7 @@ ENV FEEDR_CONFIG_FILE=/config/feedr-node.conf \
 FROM base AS test
 WORKDIR /workspace
 COPY bin ./bin
+COPY integrations ./integrations
 COPY scripts ./scripts
 COPY tests ./tests
 RUN chmod 0755 ./bin/feedr ./tests/feedr_test.sh \
@@ -26,6 +28,7 @@ RUN chmod 0755 ./bin/feedr ./tests/feedr_test.sh \
     && python3 --version \
     && pip --version \
     && pip3 --version \
+    && node --test ./tests/*.test.mjs \
     && ./tests/feedr_test.sh
 
 FROM base AS runtime
