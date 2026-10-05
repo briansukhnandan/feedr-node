@@ -5,6 +5,7 @@ import {
   billViewerUrl,
   chunkText,
   generateCongressPosts,
+  latestActionThread,
   summaryTextFromHtml,
 } from "../scripts/examples/congress-bill-summaries/congress-bill-summaries.mjs";
 
@@ -46,7 +47,9 @@ test("formats actioned bills as feedr summary threads", async () => {
   assert.equal(posts[0].id, "congress-119-hr-123-2026-10-04");
   assert.match(posts[0].thread[0].text, /Updated: 2026-10-04/);
   assert.equal(posts[0].thread[1].text, "Updates services & reporting requirements.");
-  assert.match(posts[0].thread[2].text, /Rep\. Example, Alex/);
+  assert.equal(posts[0].thread[2].text,
+    "Latest action (2026-10-04):\nPassed House.");
+  assert.match(posts[0].thread[3].text, /Rep\. Example, Alex/);
   assert.equal(posts[0].thread.at(-1).url,
     "https://www.congress.gov/bill/119th-congress/house-bill/123");
   assert.equal(posts[0].metadata.latestAction, "Passed House.");
@@ -91,4 +94,16 @@ test("keeps summary chunks within the Bluesky-safe limit", () => {
     billViewerUrl({ congress: 118, type: "SJRES", number: "2" }),
     "https://www.congress.gov/bill/118th-congress/senate-joint-resolution/2",
   );
+});
+
+test("splits long latest actions into labeled thread segments", () => {
+  const segments = latestActionThread(
+    { text: "Referred to the Committee on Example. ".repeat(30) },
+    "2026-10-04",
+  );
+
+  assert.ok(segments.length > 1);
+  assert.match(segments[0].text, /^Latest action \(2026-10-04\):/);
+  assert.match(segments[1].text, /^Latest action \(continued\):/);
+  assert.ok(segments.every(({ text }) => Array.from(text).length <= 275));
 });

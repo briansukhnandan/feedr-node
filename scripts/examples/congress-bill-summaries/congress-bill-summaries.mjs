@@ -135,6 +135,18 @@ function sponsorsText(sponsors = []) {
   );
 }
 
+export function latestActionThread(latestAction, actionDate) {
+  const firstLabel = `Latest action (${actionDate}):`;
+  const continuedLabel = "Latest action (continued):";
+  const chunkLimit = SUMMARY_CHUNK_LIMIT
+    - Math.max(runeLength(firstLabel), runeLength(continuedLabel))
+    - 1;
+  const text = String(latestAction?.text ?? "").trim() || "Not available";
+  return chunkText(text, chunkLimit).map((chunk, index) => ({
+    text: `${index === 0 ? firstLabel : continuedLabel}\n${chunk}`,
+  }));
+}
+
 export async function buildCongressPost(bill, client) {
   const [details, summary] = await Promise.all([
     client.billDetails(bill),
@@ -162,6 +174,7 @@ export async function buildCongressPost(bill, client) {
   const thread = [
     { text: rootText },
     ...chunkText(summaryText).map((text) => ({ text })),
+    ...latestActionThread(bill.latestAction, actionDate),
     { text: sponsorsText(details.sponsors) },
     { text: "Link to bill:", url },
   ];
