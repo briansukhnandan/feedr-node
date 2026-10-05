@@ -49,38 +49,6 @@ are aliases for their Python 3 equivalents. `make build`, `make start`, and
 `make test` use Docker's `--pull` option so a rebuild checks for the latest LTS
 base image. Extend the Dockerfile if a generator needs another package.
 
-## Optional integrations
-
-Reusable HTTP-only integrations live in `integrations/` and are copied into
-the image at `/integrations`. They do not run unless a feed script imports
-them, keeping the scheduler generic as more integrations are added.
-
-The bundled Reddit client handles password-grant OAuth, bearer tokens, JSON
-errors, generic authenticated GET requests, and subreddit listings using only
-Node.js built-ins. Enable it with:
-
-```sh
-cp reddit.env.example reddit.env
-# Fill in reddit.env, then uncomment the Reddit variables in compose.yaml.
-make start
-```
-
-The Make targets automatically load `reddit.env` when it exists. With direct
-Compose commands, add `--env-file reddit.env`. Feed scripts can use the client
-without installing a package:
-
-```js
-import { createRedditClient } from "../integrations/reddit/client.mjs";
-
-const reddit = createRedditClient();
-const posts = await reddit.subreddit({
-  subreddit: "worldnews",
-  sort: "top",
-  time: "day",
-  limit: 10,
-});
-```
-
 ## Generator contract
 
 The configured command runs with `FEEDR_FEED_ID`, `FEEDR_CRON_STRING`,

@@ -8,18 +8,6 @@ services:
       FEEDR_HOME: /feedr
       FEEDR_UID: "${FEEDR_UID:-1000}"
       FEEDR_GID: "${FEEDR_GID:-1000}"
-
-      # Reddit integration (optional)
-      # Copy reddit.env.example to reddit.env, fill it in, then uncomment the
-      # variables below. Make targets automatically load reddit.env when it exists.
-      #
-      # REDDIT_APP_ID: "${REDDIT_APP_ID:-}"
-      # REDDIT_APP_SECRET: "${REDDIT_APP_SECRET:-}"
-      # REDDIT_USERNAME: "${REDDIT_USERNAME:-}"
-      # REDDIT_PASSWORD: "${REDDIT_PASSWORD:-}"
-      # REDDIT_USER_AGENT: "${REDDIT_USER_AGENT:-}"
-      # REDDIT_LIMIT: "${REDDIT_LIMIT:-10}"
-      # REDDIT_TIME_FILTER: "${REDDIT_TIME_FILTER:-day}"
     volumes:
       - "${FEEDR_DATA_DIR:-$HOME/.feedr}:/feedr"
       - "./config:/config"

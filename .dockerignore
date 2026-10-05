@@ -1,4 +1,3 @@
 .git
 config/feedr-node.conf
 .env
-reddit.env
