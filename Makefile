@@ -1,6 +1,6 @@
 .PHONY: build init start stop logs test
 
-INTEGRATION_ENV_FILES := $(sort $(wildcard *.env))
+INTEGRATION_ENV_FILES := $(sort $(wildcard config/*.env))
 INTEGRATION_ENV_FLAGS := $(foreach file,$(INTEGRATION_ENV_FILES),--env-file $(file))
 COMPOSE = FEEDR_UID=$$(id -u) FEEDR_GID=$$(id -g) docker compose $(INTEGRATION_ENV_FLAGS)
 
