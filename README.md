@@ -56,6 +56,11 @@ copied into the image at `/integrations`. Nothing in that directory runs
 unless a feed script imports it, so the scheduler remains independent of the
 services used by individual feeds.
 
+Runnable integration examples live under `scripts/examples/<name>/`. Each
+directory keeps its generator and an `example.conf` together so the required
+feed ID, schedule, script command, timezone, and integration environment are
+visible in one place.
+
 Each integration can provide a `config/<name>.env.example` file. To enable
 one, copy its example to `config/<name>.env`, fill in the values, and
 uncomment that integration's environment variables in `compose.yaml`. Make
@@ -91,6 +96,12 @@ for (const bill of bills) {
   // A bill can legitimately have no API summary; in that case summary is null.
 }
 ```
+
+For a complete generator that publishes the latest bills actioned on today as
+formatted summary threads, see
+`scripts/examples/congress-bill-summaries/`. Copy its `example.conf` to
+`config/feedr-node.conf` and adjust the feed ID, schedule, and timezone for the
+parent feedr installation.
 
 ## Generator contract
 
