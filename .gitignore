@@ -1,2 +1,4 @@
 config/feedr-node.conf
 .env
+*.env
+!*.env.example

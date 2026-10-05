@@ -49,6 +49,49 @@ are aliases for their Python 3 equivalents. `make build`, `make start`, and
 `make test` use Docker's `--pull` option so a rebuild checks for the latest LTS
 base image. Extend the Dockerfile if a generator needs another package.
 
+## Optional integrations
+
+Reusable optional integrations live under `integrations/<name>/` and are
+copied into the image at `/integrations`. Nothing in that directory runs
+unless a feed script imports it, so the scheduler remains independent of the
+services used by individual feeds.
+
+Each integration can provide a `<name>.env.example` file in the project root.
+To enable one, copy its example to `<name>.env`, fill in the values, and
+uncomment that integration's environment variables in `compose.yaml`. Make
+automatically passes every root-level `*.env` file to Compose, allowing
+multiple integrations to be enabled together. These populated files are
+excluded from Git and the Docker build context.
+
+### Congress.gov
+
+The Congress.gov client fetches bills, bill details, and bill summaries
+through the official API using only Node.js built-ins. It does not scrape
+Congress.gov or launch a browser. Enable it with:
+
+```sh
+cp congress.env.example congress.env
+# Fill in congress.env, then uncomment CONGRESS_API_KEY in compose.yaml.
+make start
+```
+
+With direct Compose commands, also pass `--env-file congress.env`. A Node.js
+feed script can then use the client without installing a package:
+
+```js
+import { createCongressClient } from "../integrations/congress/client.mjs";
+
+const congress = createCongressClient();
+const date = new Date().toISOString().slice(0, 10);
+const bills = await congress.billsActionedOn({ date });
+
+for (const bill of bills) {
+  const details = await congress.billDetails(bill);
+  const summary = await congress.latestBillSummary(bill);
+  // A bill can legitimately have no API summary; in that case summary is null.
+}
+```
+
 ## Generator contract
 
 The configured command runs with `FEEDR_FEED_ID`, `FEEDR_CRON_STRING`,

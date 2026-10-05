@@ -8,6 +8,12 @@ services:
       FEEDR_HOME: /feedr
       FEEDR_UID: "${FEEDR_UID:-1000}"
       FEEDR_GID: "${FEEDR_GID:-1000}"
+
+      # Congress.gov integration (optional)
+      # Copy congress.env.example to congress.env, fill it in, then uncomment
+      # the variable below. Make targets load root-level *.env files.
+      #
+      # CONGRESS_API_KEY: "${CONGRESS_API_KEY:-}"
     volumes:
       - "${FEEDR_DATA_DIR:-$HOME/.feedr}:/feedr"
       - "./config:/config"
