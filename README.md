@@ -6,10 +6,10 @@ generator can be any executable placed in `scripts/`.
 
 ## Configure and run
 
-Initialize the node interactively:
+Initialize the node interactively, replacing `example` with the node name:
 
 ```sh
-make init
+make init-example
 ```
 
 `feedr init` asks for a feed ID and a standard five-field cron schedule and
@@ -29,8 +29,8 @@ parent's `feeds` configuration, where its publishing destinations are defined.
 Start the node:
 
 ```sh
-make start
-docker compose logs --follow feedr-node
+make start-example
+make logs-example
 ```
 
 The Compose file mounts:
@@ -45,9 +45,12 @@ the node does not leave root-owned files in `~/.feedr`.
 
 The image tracks the official `node:lts-alpine` tag and includes Node.js,
 `npm`, Alpine's current `python3`, and `pip3`. The `python` and `pip` commands
-are aliases for their Python 3 equivalents. `make build`, `make start`, and
-`make test` use Docker's `--pull` option so a rebuild checks for the latest LTS
-base image. Extend the Dockerfile if a generator needs another package.
+are aliases for their Python 3 equivalents. `make build-example`,
+`make start-example`, and `make test-example` use Docker's `--pull` option so
+a rebuild checks for the latest LTS base image. Compose uses `example` as the
+project name and automatically names the built image `example-node`. The bare
+targets also work and infer the node name from a directory ending in `-node`.
+Extend the Dockerfile if a generator needs another package.
 
 ## Optional integrations
 
@@ -77,7 +80,7 @@ Congress.gov or launch a browser. Enable it with:
 ```sh
 cp config/congress.env.example config/congress.env
 # Fill in config/congress.env, then uncomment CONGRESS_API_KEY in compose.yaml.
-make start
+make start-congress
 ```
 
 With direct Compose commands, also pass `--env-file config/congress.env`. A
@@ -140,6 +143,5 @@ container is replaced.
 ## Test
 
 ```sh
-./tests/feedr_test.sh
-docker build -t feedr-node:local .
+make test-feedr
 ```

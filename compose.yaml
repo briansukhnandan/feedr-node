@@ -1,7 +1,6 @@
 services:
-  feedr-node:
+  node:
     build: .
-    image: feedr-node:local
     restart: unless-stopped
     environment:
       FEEDR_CONFIG_FILE: /config/feedr-node.conf
