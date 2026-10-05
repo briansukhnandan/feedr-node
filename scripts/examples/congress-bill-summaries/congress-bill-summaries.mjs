@@ -150,11 +150,12 @@ export async function buildCongressPost(bill, client) {
     throw new Error(`Congress API returned an empty summary for ${bill.type} ${bill.number}`);
   }
 
-  const actionDate = dateOnly(bill.latestAction?.actionDate, dateOnly(bill.updateDate));
+  const updateDate = dateOnly(details.updateDate, dateOnly(bill.updateDate));
+  const actionDate = dateOnly(bill.latestAction?.actionDate, updateDate);
   const rootText = [
     truncateText(title, 200),
     "",
-    `Updated: ${dateOnly(details.updateDate, dateOnly(bill.updateDate))}`,
+    `Updated: ${updateDate}`,
     `Introduced: ${dateOnly(details.introducedDate)}`,
   ].join("\n");
   const url = billViewerUrl(bill);
@@ -166,7 +167,7 @@ export async function buildCongressPost(bill, client) {
   ];
 
   return {
-    id: `congress-${bill.congress}-${String(bill.type).toLowerCase()}-${bill.number}-${actionDate}`,
+    id: `congress-${bill.congress}-${String(bill.type).toLowerCase()}-${bill.number}-${updateDate}`,
     text: rootText,
     url,
     thread,
@@ -175,6 +176,7 @@ export async function buildCongressPost(bill, client) {
       congress: bill.congress,
       billType: bill.type,
       billNumber: bill.number,
+      updateDate,
       actionDate,
       latestAction: bill.latestAction?.text ?? "",
       policyArea: details.policyArea?.name ?? "Not available",
@@ -187,7 +189,7 @@ export async function generateCongressPosts({
   date = currentDateInTimeZone(process.env.FEEDR_TIMEZONE || "UTC"),
   logger = console,
 } = {}) {
-  const bills = await client.billsActionedOn({ date, limit: 20 });
+  const bills = await client.billsUpdatedOn({ date, limit: 20 });
   const results = await Promise.allSettled(
     bills.map((bill) => buildCongressPost(bill, client)),
   );

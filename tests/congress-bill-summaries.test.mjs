@@ -19,7 +19,7 @@ test("formats actioned bills as feedr summary threads", async () => {
     latestAction: { actionDate: "2026-10-04", text: "Passed House." },
   };
   const client = {
-    async billsActionedOn(options) {
+    async billsUpdatedOn(options) {
       calls.push(options);
       return [bill];
     },
@@ -50,12 +50,13 @@ test("formats actioned bills as feedr summary threads", async () => {
   assert.equal(posts[0].thread.at(-1).url,
     "https://www.congress.gov/bill/119th-congress/house-bill/123");
   assert.equal(posts[0].metadata.latestAction, "Passed House.");
+  assert.equal(posts[0].metadata.updateDate, "2026-10-04");
 });
 
 test("skips bills that have no API summary without scraping", async () => {
   const errors = [];
   const client = {
-    async billsActionedOn() {
+    async billsUpdatedOn() {
       return [{
         congress: 119,
         type: "S",

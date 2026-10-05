@@ -41,6 +41,32 @@ test("fetches bills actioned on a selected date", async () => {
   assert.equal(calls[0].options.headers.Accept, "application/json");
 });
 
+test("fetches every bill updated on a selected date", async () => {
+  const fetchImplementation = async () => new Response(JSON.stringify({
+    bills: [
+      {
+        congress: 119,
+        type: "S",
+        number: "2970",
+        updateDate: "2026-10-01",
+        latestAction: { actionDate: "2026-09-30" },
+      },
+      {
+        congress: 117,
+        type: "HR",
+        number: "6583",
+        updateDate: "2026-10-01",
+        latestAction: { actionDate: "2022-02-04" },
+      },
+    ],
+  }), { status: 200 });
+  const congress = createCongressClient({ environment, fetchImplementation });
+
+  const bills = await congress.billsUpdatedOn({ date: "2026-10-01", limit: 20 });
+
+  assert.deepEqual(bills.map(({ number }) => number), ["2970", "6583"]);
+});
+
 test("fetches bill details and selects the latest API summary", async () => {
   const paths = [];
   const fetchImplementation = async (url) => {

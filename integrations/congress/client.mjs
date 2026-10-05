@@ -133,17 +133,25 @@ export function createCongressClient({
     return payload.bills;
   }
 
-  async function billsActionedOn({
+  async function billsUpdatedOn({
     date = new Date().toISOString().slice(0, 10),
     ...options
   } = {}) {
     const normalizedDate = calendarDate(date);
-    const matchingBills = await bills({
+    return bills({
       ...options,
       fromDateTime: `${normalizedDate}T00:00:00Z`,
       toDateTime: `${normalizedDate}T23:59:59Z`,
       limit: options.limit ?? 250,
     });
+  }
+
+  async function billsActionedOn({
+    date = new Date().toISOString().slice(0, 10),
+    ...options
+  } = {}) {
+    const normalizedDate = calendarDate(date);
+    const matchingBills = await billsUpdatedOn({ date: normalizedDate, ...options });
     return matchingBills.filter((bill) => bill?.latestAction?.actionDate === normalizedDate);
   }
 
@@ -180,6 +188,7 @@ export function createCongressClient({
   return Object.freeze({
     get,
     bills,
+    billsUpdatedOn,
     billsActionedOn,
     billDetails,
     billSummaries,
