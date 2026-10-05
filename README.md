@@ -1,7 +1,7 @@
 # feedr-node
 
 `feedr-node` runs a content-generation command on a cron schedule and publishes
-the resulting JSON into a parent [feedr](../feedr) daemon's data directory. The
+the resulting JSON into a parent [feedr](https://github.com/briansukhnandan/feedr) daemon's data directory. The
 generator can be any executable placed in `scripts/`.
 
 ## Configure and run
