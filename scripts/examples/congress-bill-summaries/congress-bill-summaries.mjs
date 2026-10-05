@@ -189,7 +189,7 @@ export async function generateCongressPosts({
   date = currentDateInTimeZone(process.env.FEEDR_TIMEZONE || "UTC"),
   logger = console,
 } = {}) {
-  const bills = await client.billsUpdatedOn({ date, limit: 20 });
+  const bills = await client.billsUpdatedOn({ date, limit: 15 });
   const results = await Promise.allSettled(
     bills.map((bill) => buildCongressPost(bill, client)),
   );

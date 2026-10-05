@@ -41,7 +41,7 @@ test("formats actioned bills as feedr summary threads", async () => {
 
   const posts = await generateCongressPosts({ client, date: "2026-10-04" });
 
-  assert.deepEqual(calls, [{ date: "2026-10-04", limit: 20 }]);
+  assert.deepEqual(calls, [{ date: "2026-10-04", limit: 15 }]);
   assert.equal(posts.length, 1);
   assert.equal(posts[0].id, "congress-119-hr-123-2026-10-04");
   assert.match(posts[0].thread[0].text, /Updated: 2026-10-04/);
